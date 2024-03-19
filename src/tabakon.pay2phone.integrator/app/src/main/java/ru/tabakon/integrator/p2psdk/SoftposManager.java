@@ -16,6 +16,7 @@ import ru.tinkoff.posterminal.p2psdk.PaymentMethod;
 import ru.tinkoff.posterminal.p2psdk.R.string;
 import ru.tinkoff.posterminal.p2psdk.SoftposException;
 import ru.tinkoff.posterminal.p2psdk.SoftposInfo;
+import ru.tinkoff.posterminal.p2psdk.SoftposResult;
 import ru.tinkoff.posterminal.p2psdk.ValidationType;
 import ru.tinkoff.posterminal.p2psdk.ValidationType.Valid;
 
@@ -33,8 +34,48 @@ public final class SoftposManager {
     private static Callback callback;
     @NotNull
     private static final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        public void onReceive(@Nullable Context var1, @Nullable Intent var2) {
-            // $FF: Couldn't be decompiled
+        public void onReceive(@Nullable Context context, @Nullable Intent intent) {
+            intent.getExtras();
+            String str1 = (intent != null && intent.getExtras() != null) ? intent.getExtras().getString("result") : null;
+            if (str1 != null) {
+                String rrn;
+                Long paymentId;
+                String str2;
+                switch (str1.hashCode()) {
+                    case 1106142666:
+                        if (!str1.equals("success_payment"))
+                            break;
+                        intent.getExtras();
+                        rrn = (intent.getExtras() != null) ? intent.getExtras().getString("rrn") : null;
+                        intent.getExtras();
+                        paymentId = (intent.getExtras() != null) ? Long.valueOf(intent.getExtras().getLong("payment_id")) : null;
+                        str2 = rrn;
+                        if (!((str2 == null || StringsKt.isBlank(str2)))) {
+                            if (callback != null) {
+                                callback.onSuccess(new SoftposResult.Nfc(rrn, PaymentMethod.NFC));
+                            }
+                        } else if (paymentId != null && paymentId.longValue() > 0L) {
+                            if (callback != null) {
+                                callback.onSuccess(new SoftposResult.Qr(paymentId.longValue(), PaymentMethod.QR));
+                            }
+                        } else if (callback != null) {
+                            callback.onError(new IllegalArgumentException("rrn = null && paymentId = null"));
+                        }
+                        return;
+                    case 373170996:
+                        if (!str1.equals("success_refund"))
+                            break;
+                        if (callback != null) {
+                            callback.onSuccess(SoftposResult.Refund.INSTANCE);
+                        }
+                        return;
+                }
+            }
+            intent.getExtras();
+            String errorMessage = (intent != null && intent.getExtras() != null) ? intent.getExtras().getString("error_message") : null;
+            if (SoftposManager.callback != null) {
+                SoftposManager.callback.onError(new SoftposException.TransactionException(errorMessage));
+            }
         }
     };
 

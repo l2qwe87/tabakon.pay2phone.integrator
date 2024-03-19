@@ -1,12 +1,46 @@
 package ru.tabakon.integrator.socket
 
-enum class PaymentMethodEnum(val value: Int) {
-    None(0),
-    NFC(1),
-    QR(2)
+enum class PaymentMethodEnum(val value: String) {
+    None("None"),
+    NFC("NFC"),
+    QR("QR");
+
+    companion object {
+        fun fromString(value: String) = entries.first { it.value == value }
+    }
 }
-class WebSocketMessage(val MessageType: String)
-class CreatePaymentOrderCommandMessage(val MessageBody: CreatePaymentOrderCommand);
+
+enum class OrderStatusEnum(val value: String) {
+    New("New"),
+    Created("Created"),
+    Successful("Successful"),
+    Fail("Fail");
+}
+
+interface IMessageBody
+interface IMessage
+
+data class WebSocketMessage(val messageType: String)
+
+////////////////////////////////////////////////////////////////////////
+//          ResultMessage
+////////////////////////////////////////////////////////////////////////
+data class OrderStatusChangedMessage(val messageBody: OrderStatusChanged): IMessage{
+    val messageType = "OrderStatusChanged"
+}
+data class OrderStatusChanged(val orderId: String?, val orderStatus: OrderStatusEnum, val description: String? = null): IMessageBody
 
 
-class CreatePaymentOrderCommand(val PaymentOrderId: String, val PaymentMethod: Int?, val PaymentAmount: Float?)
+////////////////////////////////////////////////////////////////////////
+//          CreatePaymentOrderCommand
+////////////////////////////////////////////////////////////////////////
+data class CreatePaymentOrderCommandMessage(val messageBody: CreatePaymentOrderCommand): IMessage
+
+data class CreatePaymentOrderCommand(val orderId: String, val paymentMethod: String?, val amount: Float?): IMessageBody
+
+////////////////////////////////////////////////////////////////////////
+//          RefundCommand
+////////////////////////////////////////////////////////////////////////
+data class RefundCommandMessage(val messageBody: RefundCommand): IMessage
+
+data class RefundCommand(val orderId: String, val paymentMethod: String?, val amount: Float?): IMessageBody
