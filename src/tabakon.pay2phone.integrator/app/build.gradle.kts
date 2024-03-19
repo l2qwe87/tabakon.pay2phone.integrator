@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "ru.tabakon.integrator"
-        minSdk = 31
+        minSdk = 33
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.1.29"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -70,5 +70,5 @@ dependencies {
 
     implementation ("com.beust:klaxon:5.5")
     implementation ("org.java-websocket:Java-WebSocket:1.4.0")
-    implementation(files("p2psdk-1.0.aar"))
+    implementation(files("p2psdk-1.0.1.aar"))
 }

@@ -1,4 +1,4 @@
-package ru.tabakon.integrator.ui.theme
+package ru.tabakon.integrator.activities.common.ui.theme
 
 import android.app.Activity
 import android.os.Build

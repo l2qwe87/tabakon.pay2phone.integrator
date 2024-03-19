@@ -1,5 +1,7 @@
 package ru.tabakon.integrator.p2psdk;
 
+import static ru.tabakon.integrator.LogKt.log;
+
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,11 +13,14 @@ import kotlin.text.StringsKt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import ru.tabakon.integrator.IntegrationWorker;
+import ru.tabakon.integrator.p2pimp.P2pResult;
 import ru.tinkoff.posterminal.p2psdk.Callback;
 import ru.tinkoff.posterminal.p2psdk.PaymentMethod;
 import ru.tinkoff.posterminal.p2psdk.R.string;
 import ru.tinkoff.posterminal.p2psdk.SoftposException;
 import ru.tinkoff.posterminal.p2psdk.SoftposInfo;
+import ru.tinkoff.posterminal.p2psdk.SoftposResult;
 import ru.tinkoff.posterminal.p2psdk.ValidationType;
 import ru.tinkoff.posterminal.p2psdk.ValidationType.Valid;
 
@@ -31,10 +36,61 @@ public final class SoftposManager {
     public static final SoftposManager INSTANCE = new SoftposManager();
     @Nullable
     private static Callback callback;
+
     @NotNull
     private static final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        public void onReceive(@Nullable Context var1, @Nullable Intent var2) {
-            // $FF: Couldn't be decompiled
+        public void onReceive(@Nullable Context context, @Nullable Intent intent) {
+
+            log(context, "SoftposManager.BroadcastReceiver");
+
+            intent.getExtras();
+            String str1 = (intent != null && intent.getExtras() != null) ? intent.getExtras().getString("result") : null;
+            log(context, str1);
+            if (str1 != null) {
+                String rrn;
+                Long paymentId;
+                if(str1.equals("success_payment")){
+                    intent.getExtras();
+                    rrn = (intent.getExtras() != null) ? intent.getExtras().getString("rrn") : null;
+                    intent.getExtras();
+                    paymentId = (intent.getExtras() != null) ? intent.getExtras().getLong("payment_id") : null;
+                    if (rrn != null && (!rrn.isEmpty())) {
+                        log(context, rrn);
+                        if (callback != null) {
+                            callback.onSuccess(new SoftposResult.Nfc(rrn, PaymentMethod.NFC));
+                        }else{
+                            log(context, "SoftposManager.BroadcastReceiver NFC "+rrn);
+                            IntegrationWorker.Companion.getIntegrator().handlePayToPhoneResult(new P2pResult(rrn, true, ""));
+                        }
+                    } else if (paymentId != null && paymentId > 0L) {
+                        if (callback != null) {
+                            callback.onSuccess(new SoftposResult.Qr(paymentId, PaymentMethod.QR));
+                        }else{
+                            IntegrationWorker.Companion.getIntegrator().handlePayToPhoneResult(new P2pResult(paymentId.toString(), true, ""));
+                        }
+                    } else if (callback != null) {
+                        callback.onError(new IllegalArgumentException("rrn = null && paymentId = null"));
+                    }else{
+                        log(context, "SoftposManager.BroadcastReceiver ERROR");
+                        IntegrationWorker.Companion.getIntegrator().handlePayToPhoneResult(new P2pResult("", false, "rrn = null && paymentId = null"));
+                    }
+                    return;
+                }
+                if(str1.equals("success_refund")){
+                    if (callback != null) {
+                        callback.onSuccess(SoftposResult.Refund.INSTANCE);
+                    }
+                    return;
+                }
+            }
+            intent.getExtras();
+            String errorMessage = (intent != null && intent.getExtras() != null) ? intent.getExtras().getString("error_message") : null;
+            if (SoftposManager.callback != null) {
+                SoftposManager.callback.onError(new SoftposException.TransactionException(errorMessage));
+            }else{
+
+                IntegrationWorker.Companion.getIntegrator().handlePayToPhoneResult(new P2pResult("", false, errorMessage));
+            }
         }
     };
 
@@ -137,7 +193,13 @@ public final class SoftposManager {
     }
 
     private final void startActivity(Context context, long amount, boolean isRefund, PaymentMethod paymentMethod, SoftposInfo softposInfo) {
-        context.registerReceiver((BroadcastReceiver)broadcastReceiver, new IntentFilter("ru.tinkoff.posterminal.broadcast.RESULT_TRANSACTION"));
+        /*try {
+            clear(context);
+        } catch (Exception ignored) {
+        }
+        */
+
+        /*context.registerReceiver((BroadcastReceiver)broadcastReceiver, new IntentFilter("ru.tinkoff.posterminal.broadcast.RESULT_TRANSACTION"));*/
 
         try {
             Intent intent = this.buildIntent(isRefund, amount, paymentMethod, softposInfo);
