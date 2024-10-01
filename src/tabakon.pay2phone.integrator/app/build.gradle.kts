@@ -4,6 +4,15 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile =
+                file("F:\\src\\tabakon\\tabakon.pay2phone.integrator\\src\\keystores\\tabakon.jks")
+            storePassword = "tabak123"
+            keyAlias = "tabakon.pay2phone"
+            keyPassword = "tabak123"
+        }
+    }
     namespace = "ru.tabakon.integrator"
     compileSdk = 34
 
@@ -18,6 +27,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildTypes {
