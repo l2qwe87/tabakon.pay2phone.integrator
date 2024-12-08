@@ -3,7 +3,8 @@ package ru.tabakon.integrator.p2pimp
 import android.content.Context
 import ru.tabakon.integrator.log
 import ru.tabakon.integrator.socket.PaymentMethodEnum
-import ru.tinkoff.posterminal.p2psdk.SoftposInfo
+import ru.tinkoff.posterminal.p2psdk.PaymentTransactionData
+import ru.tinkoff.posterminal.p2psdk.RefundTransactionData
 
 
 interface IPayToPhoneClient {
@@ -11,19 +12,22 @@ interface IPayToPhoneClient {
     fun refund(amount: Float, method: PaymentMethodEnum, callBack: (P2pResult) -> Unit)
 }
 
+//data class  ImpTransactionData(override val amount: Long,override val paymentMethod: PaymentMethod) :
+//    ru.tinkoff.posterminal.p2psdk.TransactionData;
+
 class PayToPhoneClient(private val context : Context): IPayToPhoneClient {
 
-    private val softposManager = ru.tinkoff.posterminal.p2psdk.SoftposManager;
+    private val softposManager = ru.tinkoff.posterminal.p2psdk.TSoftposManager(context);
     //private val softposManager = ru.tabakon.integrator.p2psdk.SoftposManager.INSTANCE
 
     override fun pay(amount: Float, method: PaymentMethodEnum, callBack : (P2pResult) -> Unit) {
         val payToPhoneHandler = PayToPhoneHandler(callBack)
+        val tr = PaymentTransactionData((amount * 100).toLong(), toPaymentMethod(method));
+
         Thread {
             softposManager.payToPhone(
-                context,
-                (amount * 100).toLong(),
+                tr,
                 payToPhoneHandler,
-                toPaymentMethod(method)
             )
         }.start()
     }
@@ -31,15 +35,12 @@ class PayToPhoneClient(private val context : Context): IPayToPhoneClient {
     override fun refund(amount: Float, method: PaymentMethodEnum, callBack : (P2pResult) -> Unit) {
         log("refund")
         val payToPhoneHandler = PayToPhoneHandler(callBack)
-        var softposInfo: SoftposInfo = SoftposInfo.Nfc("1")
-        if(method == PaymentMethodEnum.QR){
-            softposInfo = SoftposInfo.Qr(1)
-        }
+
+        val tr = RefundTransactionData((amount * 100).toLong(), toPaymentMethod(method), 1, 1);
+
         Thread {
-            softposManager.refund(
-                context,
-                (amount * 100).toLong(),
-                softposInfo,
+            softposManager.payToPhone(
+                tr,
                 payToPhoneHandler
             )
         }.start()

@@ -80,5 +80,5 @@ dependencies {
 
     implementation ("com.beust:klaxon:5.5")
     implementation ("org.java-websocket:Java-WebSocket:1.4.0")
-    implementation(files("p2psdk-1.0.1.aar"))
+    implementation(files("p2p-sdk-1.0.0-release.aar"))
 }

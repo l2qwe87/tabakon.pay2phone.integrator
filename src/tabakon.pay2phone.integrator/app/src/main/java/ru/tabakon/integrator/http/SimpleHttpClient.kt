@@ -17,7 +17,7 @@ class SimpleHttpClient(private val _uri : URI) {
         with(mURL.openConnection() as HttpURLConnection) {
             // optional default is GET
             this.requestMethod = "GET"
-            this.connectTimeout = 100;
+            this.connectTimeout = 1000;
 
             BufferedReader(InputStreamReader(inputStream)).use {
                 val response = StringBuffer()

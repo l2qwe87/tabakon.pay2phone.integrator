@@ -3,7 +3,6 @@ package ru.tabakon.integrator.p2pimp
 import android.content.Context
 import android.content.Intent
 import com.beust.klaxon.Klaxon
-import ru.tabakon.integrator.activities.result.ResultActivity
 import ru.tabakon.integrator.http.TabakonHttpClientBuilder
 import ru.tabakon.integrator.log
 import ru.tabakon.integrator.socket.CreatePaymentOrderCommandMessage
@@ -122,9 +121,9 @@ class Integrator{
         val orderStatus = if (result.isSuccess) OrderStatusEnum.Successful else OrderStatusEnum.Fail
         sendOrderStatusChanged(orderStatus, result.msg)
 
-        val intent = Intent(context, ResultActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent);
+        //val intent = Intent(context, ResultActivity::class.java)
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        //context.startActivity(intent);
     }
 
     fun sendOrderStatusChanged(orderStatus: OrderStatusEnum, msg: String? = null){

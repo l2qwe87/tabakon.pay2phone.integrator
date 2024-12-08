@@ -1,15 +1,12 @@
 package ru.tabakon.integrator
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
@@ -18,7 +15,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import ru.tabakon.integrator.activities.main.MainActivity
 import ru.tabakon.integrator.p2pimp.Integrator
-import ru.tabakon.integrator.p2pimp.P2pResult
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -31,7 +27,7 @@ class IntegrationWorker : Service() {
 
         private val CHANNEL_ID = "TabakonIntegratorService"
 
-        lateinit var broadCastReceiver: BroadcastReceiver;
+        /*lateinit var broadCastReceiver: BroadcastReceiver;*/
 
         var integrator: Integrator = Integrator();
 
@@ -120,7 +116,7 @@ class IntegrationWorker : Service() {
             wakeLock.release();
         }.start();
 
-        rg();
+        /*rg();*/
         return START_STICKY
     }
 
@@ -192,7 +188,7 @@ class IntegrationWorker : Service() {
         }
     }
 
-    fun rg(){
+    /*fun rg(){
         broadCastReceiver = object : BroadcastReceiver() {
             @SuppressLint("SuspiciousIndentation")
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -260,7 +256,7 @@ class IntegrationWorker : Service() {
             broadCastReceiver,
             IntentFilter("ru.tinkoff.posterminal.broadcast.RESULT_TRANSACTION"), RECEIVER_EXPORTED
         )
-    }
+    }*/
 }
 
 

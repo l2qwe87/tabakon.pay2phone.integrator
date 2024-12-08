@@ -1,6 +1,7 @@
 package ru.tabakon.integrator.activities.main.ui
 
 import android.content.BroadcastReceiver
+import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.compose.runtime.Composable
@@ -28,7 +29,7 @@ fun SystemBroadcastReceiver(
             }
         }
 
-        context.registerReceiver(broadcast, intentFilter)
+        context.registerReceiver(broadcast, intentFilter, RECEIVER_EXPORTED)
 
         onDispose {
             context.unregisterReceiver(broadcast)
