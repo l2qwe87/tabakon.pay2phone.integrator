@@ -89,7 +89,11 @@ class TabakonHttpClient(
 
         val thread = Thread {
             while (!isStopped) {
-                getOrder();
+                try {
+                    getOrder();
+                } catch(e : Exception) {
+                    onClose.invoke()
+                }
                 Thread.sleep(200);
             }
         }

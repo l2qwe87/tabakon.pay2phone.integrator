@@ -77,13 +77,9 @@ class IntegrationWorker : Service() {
 
         val notification = getNotification(hostName ?: "???");
 
-        //startForeground(NOTIF_ID, notification)
         startForeground(NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
 
-        //var payToPhoneClient: IPayToPhoneClient = PayToPhoneClient(getContext())
-        //stopSelf();
-        Thread {
-            //val uri = URI("ws://$hostName/");
+          Thread {
             val uri = URI("http://$hostName/");
             val context = getContext();
             log(hostName!!);
@@ -116,15 +112,11 @@ class IntegrationWorker : Service() {
             wakeLock.release();
         }.start();
 
-        /*rg();*/
         return START_STICKY
     }
 
     private fun  getContext():Context{
-        //var cont = this;
-        //var cont = MainApplication.applicationContext()
         var cont = MainActivity.context;
-        //var cont = createPackageContext("ru.tinkoff.posterminal.singleactivity.MainActivity", 0)
         return cont;
     }
 
@@ -187,76 +179,6 @@ class IntegrationWorker : Service() {
             manager.createNotificationChannel(serviceChannel)
         }
     }
-
-    /*fun rg(){
-        broadCastReceiver = object : BroadcastReceiver() {
-            @SuppressLint("SuspiciousIndentation")
-            override fun onReceive(context: Context?, intent: Intent?) {
-                log(getContext(), "IntegrationWorker.BroadcastReceiver")
-
-                intent!!.extras
-
-                intent.extras
-                val str1 = if (intent != null && intent.extras != null) intent.extras!!
-                    .getString("result") else null
-                log(context!!, str1!!)
-                if (str1 != null) {
-                    val rrn: String?
-                    val paymentId: Long?
-                    if (str1 == "success_payment") {
-                        intent.extras
-                        rrn = if (intent.extras != null) intent.extras!!.getString("rrn") else null
-                        intent.extras
-                        paymentId = if (intent.extras != null) intent.extras!!.getLong("payment_id") else null
-                        if (rrn != null && !rrn.isEmpty()) {
-                            log(context, rrn)
-                            log(context, "SoftposManager.BroadcastReceiver NFC $rrn")
-                            integrator.handlePayToPhoneResult(P2pResult(rrn, true, rrn))
-
-                        } else if (paymentId != null && paymentId > 0L) {
-                            integrator.handlePayToPhoneResult(
-                                P2pResult(
-                                    paymentId.toString(),
-                                    true,
-                                    paymentId.toString()
-                                )
-                            )
-
-                        } else {
-                            log(context, "SoftposManager.BroadcastReceiver ERROR")
-                            integrator.handlePayToPhoneResult(
-                                P2pResult(
-                                    "",
-                                    false,
-                                    "rrn = null && paymentId = null"
-                                )
-                            )
-                        }
-                        return
-                    }
-                    if (str1 == "success_refund") {
-                        integrator.handlePayToPhoneResult(
-                            P2pResult(
-                                "",
-                                true,
-                                "success_refund"
-                            )
-                        )
-                        return
-                    }
-                }
-                intent.extras
-                val errorMessage = if (intent != null && intent.extras != null) intent.extras!!
-                    .getString("error_message") else null
-                    integrator.handlePayToPhoneResult(P2pResult("", false, errorMessage))
-            }
-        }
-
-        getContext().registerReceiver(
-            broadCastReceiver,
-            IntentFilter("ru.tinkoff.posterminal.broadcast.RESULT_TRANSACTION"), RECEIVER_EXPORTED
-        )
-    }*/
 }
 
 

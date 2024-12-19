@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "ru.tabakon.integrator"
-        minSdk = 33
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.1.29"
@@ -78,6 +78,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.androidx.navigation.compose)
     implementation ("com.beust:klaxon:5.5")
     implementation ("org.java-websocket:Java-WebSocket:1.4.0")
     implementation(files("p2p-sdk-1.0.0-release.aar"))

@@ -1,4 +1,4 @@
-package ru.tabakon.integrator.activities.main.ui
+package ru.tabakon.integrator.activities.main.ui.screens
 
 import android.os.Bundle
 import androidx.compose.foundation.background
@@ -23,9 +23,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.tabakon.integrator.INFO
 import ru.tabakon.integrator.IntegrationWorker
+import ru.tabakon.integrator.LISTENER_MESSAGE_RECEIVED
+import ru.tabakon.integrator.LISTENER_MESSAGE_SENDING
+import ru.tabakon.integrator.LISTENER_STARTED
+import ru.tabakon.integrator.LISTENER_STOPPED
 import ru.tabakon.integrator.MainApplication
 import ru.tabakon.integrator.activities.main.MainActivity
+import ru.tabakon.integrator.activities.main.ui.SystemBroadcastReceiver
 import ru.tabakon.integrator.log
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -47,10 +53,10 @@ fun TabakonWebSocketScreen(tabakonWebSocketViewModel : TabakonWebSocketViewModel
         traceLog.value = line + "\n" + current + " " + msg + "\n" + traceLog.value
     }
 
-    SystemBroadcastReceiver(systemAction = ru.tabakon.integrator.LISTENER_STOPPED) { recivedIntent ->
+    SystemBroadcastReceiver(systemAction = LISTENER_STOPPED) { recivedIntent ->
         val action = recivedIntent?.action ?: return@SystemBroadcastReceiver
 
-        if(action == ru.tabakon.integrator.LISTENER_STOPPED){
+        if(action == LISTENER_STOPPED){
             if(state.value != "offline") {
                 state.value = "offline"
                 addTraceLog("LISTENER_STOPPED")
@@ -60,10 +66,10 @@ fun TabakonWebSocketScreen(tabakonWebSocketViewModel : TabakonWebSocketViewModel
         }
     }
 
-    SystemBroadcastReceiver(systemAction = ru.tabakon.integrator.LISTENER_STARTED) { receivedIntent ->
+    SystemBroadcastReceiver(systemAction = LISTENER_STARTED) { receivedIntent ->
         val action = receivedIntent?.action ?: return@SystemBroadcastReceiver
 
-        if(action == ru.tabakon.integrator.LISTENER_STARTED){
+        if(action == LISTENER_STARTED){
             if(state.value != "online") {
                 state.value = "online"
                 addTraceLog("LISTENER_STARTED")
@@ -73,19 +79,19 @@ fun TabakonWebSocketScreen(tabakonWebSocketViewModel : TabakonWebSocketViewModel
         }
     }
 
-    SystemBroadcastReceiver(systemAction = ru.tabakon.integrator.LISTENER_MESSAGE_RECEIVED) { receivedIntent ->
+    SystemBroadcastReceiver(systemAction = LISTENER_MESSAGE_RECEIVED) { receivedIntent ->
         val action = receivedIntent?.action ?: return@SystemBroadcastReceiver
 
-        if(action == ru.tabakon.integrator.LISTENER_MESSAGE_RECEIVED){
+        if(action == LISTENER_MESSAGE_RECEIVED){
             val msg = receivedIntent.getStringExtra("msg")
             addTraceLog("LISTENER_MESSAGE_RECEIVED\n$msg")
         }
     }
 
-    SystemBroadcastReceiver(systemAction = ru.tabakon.integrator.LISTENER_MESSAGE_SENDING) { receivedIntent ->
+    SystemBroadcastReceiver(systemAction = LISTENER_MESSAGE_SENDING) { receivedIntent ->
         val action = receivedIntent?.action ?: return@SystemBroadcastReceiver
 
-        if(action == ru.tabakon.integrator.LISTENER_MESSAGE_SENDING){
+        if(action == LISTENER_MESSAGE_SENDING){
             val msg = receivedIntent.getStringExtra("msg")
             addTraceLog("LISTENER_MESSAGE_SENDING\n$msg")
         }
@@ -110,10 +116,10 @@ fun TabakonWebSocketScreen(tabakonWebSocketViewModel : TabakonWebSocketViewModel
     }
 
 
-    SystemBroadcastReceiver(systemAction = ru.tabakon.integrator.INFO) { receivedIntent ->
+    SystemBroadcastReceiver(systemAction = INFO) { receivedIntent ->
         val action = receivedIntent?.action ?: return@SystemBroadcastReceiver
 
-        if(action == ru.tabakon.integrator.INFO){
+        if(action == INFO){
             val msg = receivedIntent.getStringExtra("msg")
             addTraceLog("INFO\n$msg")
         }
@@ -122,6 +128,7 @@ fun TabakonWebSocketScreen(tabakonWebSocketViewModel : TabakonWebSocketViewModel
     Column(
         modifier = Modifier
             .padding(10.dp)
+            .background(color = Color.Transparent)
     ) {
         Text(
             text = "Табакон. Интегратор. PayToPhone.",
@@ -130,7 +137,10 @@ fun TabakonWebSocketScreen(tabakonWebSocketViewModel : TabakonWebSocketViewModel
         Text(
             text = state.value
         )
-        Row {
+        Row(
+            modifier = Modifier
+                .background(color = Color.Transparent)
+        ) {
             TextField(
                 value = tabakonWebSocketViewModel.host,
                 singleLine = true,

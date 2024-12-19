@@ -1,4 +1,4 @@
-package ru.tabakon.integrator.activities.main.ui
+package ru.tabakon.integrator.activities.main.ui.screens
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf

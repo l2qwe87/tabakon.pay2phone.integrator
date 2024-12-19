@@ -30,6 +30,7 @@ class SimpleHttpClient(private val _uri : URI) {
                 it.close()
                 callback(response.toString())
             }
+
         }
     }
 
