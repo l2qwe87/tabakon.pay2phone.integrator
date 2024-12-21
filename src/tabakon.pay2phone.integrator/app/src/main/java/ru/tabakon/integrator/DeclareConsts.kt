@@ -9,3 +9,7 @@ const val LISTENER_MESSAGE_RECEIVED = "ru.tabakon.integrator.LISTENER_MESSAGE_RE
 const val LISTENER_MESSAGE_SENDING = "ru.tabakon.integrator.LISTENER_MESSAGE_SENDING"
 
 const val INFO = "ru.tabakon.integrator.INFO"
+
+///////////////////////////////////////////////////////////////////////////////////
+
+const val WORKER_STATUS = "ru.tabakon.integrator.WORKER_STATUS"

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    //alias(libs.plugins.jetbrainsKotlinJvm)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
 android {
@@ -77,6 +79,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     implementation(libs.androidx.navigation.compose)
     implementation ("com.beust:klaxon:5.5")

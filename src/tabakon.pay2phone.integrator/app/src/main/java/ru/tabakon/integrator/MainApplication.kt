@@ -8,17 +8,27 @@ import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
+import ru.tabakon.integrator.utilits.SettingsStorage
 
 
 class MainApplication: Application() {
 
     init {
         instance = this
+        settingsStorage = SettingsStorage(this);
     }
     companion object {
-        private var instance: MainApplication? = null
+        private lateinit var instance: MainApplication
+
+        @SuppressLint("StaticFieldLeak")
+        private lateinit var settingsStorage : SettingsStorage
+
         fun applicationContext() : Context {
-            return instance!!.applicationContext
+            return instance.applicationContext
+        }
+
+        fun settingsStorage() : SettingsStorage {
+            return settingsStorage;
         }
     }
 
