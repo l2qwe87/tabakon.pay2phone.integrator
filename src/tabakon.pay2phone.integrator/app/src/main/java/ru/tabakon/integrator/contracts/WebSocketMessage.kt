@@ -49,5 +49,11 @@ data class CreatePaymentOrderCommand(val orderId: String, val paymentMethod: Str
 data class RefundCommandMessage(val messageBody: RefundCommand): IMessage
 
 @Serializable
-data class RefundCommand(val orderId: String, val paymentMethod: String?, val amount: Float?):
+data class RefundCommand(
+    val orderId: String,
+    val paymentMethod: String?,
+    val amount: Float?,
+    val transactionId: Long?,
+    val mid: Long?
+):
     IMessageBody

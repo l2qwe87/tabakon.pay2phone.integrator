@@ -23,11 +23,11 @@ class PayToPhoneClient(private val context : Context): IPayToPhoneClient {
         }.start()
     }
 
-    override fun refund(amount: Float, method: PaymentMethodEnum, callBack : (P2pResult) -> Unit) {
+    override fun refund(amount: Float, method: PaymentMethodEnum, transactionId: Long, mid: Long, callBack : (P2pResult) -> Unit) {
         log("refund")
         val payToPhoneHandler = PayToPhoneHandler(callBack)
 
-        val tr = RefundTransactionData((amount * 100).toLong(), toPaymentMethod(method), 1, 1);
+        val tr = RefundTransactionData((amount * 100).toLong(), toPaymentMethod(method), transactionId, mid);
 
         Thread {
             softposManager.payToPhone(

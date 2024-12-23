@@ -13,3 +13,4 @@ const val INFO = "ru.tabakon.integrator.INFO"
 ///////////////////////////////////////////////////////////////////////////////////
 
 const val WORKER_STATUS = "ru.tabakon.integrator.WORKER_STATUS"
+const val WORKER_STATUS_ONLINE = "Online"

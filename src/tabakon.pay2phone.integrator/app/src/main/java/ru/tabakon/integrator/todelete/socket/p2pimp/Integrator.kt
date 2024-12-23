@@ -120,7 +120,7 @@ class Integrator{
 
 
     fun handlePayToPhoneResult(result: P2pResult){
-        val msg = ( result.msg ?: "" ) + "\n" + result.identity;
+        val msg = ( result.msg ?: "" ) + "\n" + result.transactionId;
         val orderStatus = if (result.isSuccess) OrderStatusEnum.Successful else OrderStatusEnum.Fail
         sendOrderStatusChanged(orderStatus, result.msg)
 

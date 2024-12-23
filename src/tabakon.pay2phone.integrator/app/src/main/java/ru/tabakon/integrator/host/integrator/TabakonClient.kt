@@ -12,9 +12,12 @@ import ru.tabakon.integrator.host.http.IHttpClient
 
 class TabakonClient(private val httpClient: IHttpClient): ITabakonClient {
 
-    override suspend fun dequeueOrder(): IMessage {
+    override suspend fun dequeueOrder(): IMessage? {
         val resp = httpClient.get("Hub/DequeueCommand");
         val message = resp.body;
+        if(message.isEmpty() || message.isBlank()){
+            return null;
+        }
         val webSocketMessage = Klaxon().parse<WebSocketMessage>(message)
         if(webSocketMessage?.messageType == "CreatePaymentOrderCommand"){
             val createPaymentOrderCommandMessage = Klaxon().parse<CreatePaymentOrderCommandMessage>(message)

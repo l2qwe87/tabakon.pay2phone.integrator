@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
+import ru.tabakon.integrator.host.MainService
 import ru.tabakon.integrator.utilits.SettingsStorage
 
 
@@ -41,6 +42,10 @@ class MainApplication: Application() {
         val notificationManagerCompat = NotificationManagerCompat.from(applicationContext())
         val areNotificationsEnabled = notificationManagerCompat.areNotificationsEnabled()
         log(applicationContext(), "areNotificationsEnabled=$areNotificationsEnabled")
+
+        val host = MainApplication.settingsStorage().getHost()
+        val port = MainApplication.settingsStorage().getPort()
+        MainService.startService(MainApplication.applicationContext(), "${host}:${port}")
 
     }
 
